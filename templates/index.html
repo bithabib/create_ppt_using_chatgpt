@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Slide Maker</title>
+    <style>
+      /* Style for the slide maker background */
+      body {
+        background-image: url("https://cdn.pixabay.com/photo/2014/12/15/17/16/presentation-569913_1280.jpg");
+        background-size: cover;
+        font-family: Arial, sans-serif;
+      }
+      
+      /* Style for the form */
+      form {
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 50px;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      
+      /* Style for the form input */
+      input[type=text] {
+        width: 100%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        box-sizing: border-box;
+        border: 2px solid #ccc;
+        border-radius: 4px;
+      }
+      
+      /* Style for the form submit button */
+      input[type=submit] {
+        background-color: #4CAF50;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      
+      /* Style for the form submit button when hovered over */
+      input[type=submit]:hover {
+        background-color: #45a049;
+      }
+    </style>
+  </head>
+  <body>
+    <form action="{{ url_for('create_ppt') }}" method="post">
+      <label for="topic">Enter your topic:</label>
+      <input type="text" id="topic" name="topic" placeholder="Enter your topic...">
+      <br><br>
+      <input type="submit" value="Submit">
+    </form>
+  </body>
+</html>
