@@ -1,9 +1,10 @@
 from app import app
 from flask import render_template, request, redirect, url_for
 from pptx import Presentation
-from pptx.util import Inches
+from pptx.util import Inches, Pt
 import openai
 import os
+import re
 from dotenv import load_dotenv
 load_dotenv()
 openai.api_key = os.environ.get('API_KEY')
@@ -14,34 +15,29 @@ def index():
 
 @app.route('/create_ppt', methods=['POST'])
 def create_ppt():
+    def first_response_type(text):
+        pattern = r"\d+\)\s"
+        text = re.sub(pattern, "", text)
+        text = text.replace("\n\n", "\n")
+        pattern = r'Slide [Hh]eader (\d+): (.+)\n\d+\.\s(.+)\n\d+\.\s(.+)\n\d+\.\s(.+)\n'
+        headers_and_content = re.findall(pattern, text)
+        print(headers_and_content)
+        if not headers_and_content:
+            print("I am inside")
+            pattern = r'Slide (\d+) [Hh]eader: (.+)\n\d+\.\s(.+)\n\d+\.\s(.+)\n\d+\.\s(.+)\n'
+            headers_and_content = re.findall(pattern, text)
+            print(headers_and_content)
 
-    def generate_content(prompt):
-        messages = [
-                {"role": "system", "content" : "You’re a kind helpful assistant"}
-            ]
+        headers_and_content_dict = {}
+        for header_and_content in headers_and_content:
+            headers_and_content_dict[header_and_content[1]] = header_and_content[2:]
+        return headers_and_content_dict
+    messages = [
+            {"role": "system", "content" : "You’re a kind helpful assistant"}
+        ]
+    def generate_header(prompt):
+        
         messages.append({"role": "user", "content": prompt})
-        completion = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=messages
-            )
-        return completion.choices[0].message.content
-
-    def generate_header(prompt, number_of_slides):
-        messages = [
-                {"role": "system", "content" : "You’re a kind helpful assistant"}
-            ]
-        messages.append({"role": "user", "content": "Please give me " + number_of_slides + " short main point on" + prompt + " to add as slide header. Please return as a python list."})
-        completion = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=messages
-            )
-        return completion.choices[0].message.content
-    
-    def generate_ppt(prompt):
-        messages = [
-                {"role": "system", "content" : "You’re a kind helpful assistant"}
-            ]
-        messages.append({"role": "user", "content": "Write a ppt on " + prompt + " in given format Slide Number, Header and Content"})
         completion = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=messages
@@ -49,53 +45,14 @@ def create_ppt():
         return completion.choices[0].message.content
     
     topic = request.form['topic']
-    generated_ppt = generate_ppt(topic)
-    # print(generated_ppt)
-    split_backslash_n = generated_ppt.split("\n")
-    # print(split_backslash_n)
-    if "Header: " in generated_ppt:
-        i = 0
-        header_content = []
-        header_content_dict = {}
-        while i< len(split_backslash_n):
-            
-            if 'Header:' in split_backslash_n[i]:
-                if header_content_dict:
-                    header_content.append(header_content_dict)
-                    header_content_dict = {}
-                    header_content_dict['header'] = split_backslash_n[i].replace("Header: ","")
-                    i = i+1
-                else:
-                    header_content_dict['header'] = split_backslash_n[i].replace("Header: ","")
-                    i = i+1
-            else:
-                if 'Content:' in split_backslash_n[i]:
-                    if 'content' in header_content_dict:
-                        header_content_dict['content'] = header_content_dict['content'] + split_backslash_n[i].replace("Content:","")
-                    else:
-                        header_content_dict['content'] = split_backslash_n[i].replace("Content:","")
-                        
-                    i = i+1
-                    
-                else:
-                    if 'content' in header_content_dict:
-                        header_content_dict['content'] = header_content_dict['content'] + '\n' + split_backslash_n[i]
-                    else:
-                        header_content_dict['content'] = split_backslash_n[i]
-                    i = i+1
-        print(header_content)
-    else:
-        i = 0
-        header_content = []
-        while i< len(split_backslash_n):
-            if 'Slide' in split_backslash_n[i]:
-                header_content.append(split_backslash_n[i+1])
-                # header_content.append(split_backslash_n[i+2])
-                i = i+2
-            else:
-                header_content.append(split_backslash_n[i])
-                i = i+1
-        print(header_content)
+    slide_1_prompt = f"Please provide five slide header on {topic} in the following format: \n 1) Slide header 1: 1. Key Point 1, \n 2. Key Point 2, ,\n 3. Key Point 3 \n 2) Slide header 2: 1. Key Point 1, \n 2. Key Point 2, ,\n 3. Key Point 3 \n 3) Slide header 3: 1. Key Point 1, \n 2. Key Point 2, ,\n 3. Key Point 3 \n 4) Slide header 4: 1. Key Point 1, \n 2. Key Point 2, ,\n 3. Key Point 3 \n 5) Slide header 5: 1. Key Point 1, \n 2. Key Point 2, ,\n 3. Key Point 3"
+    
+    result_from_gpt = generate_header(slide_1_prompt)
+    print(result_from_gpt)
+    formatted_dict = first_response_type(result_from_gpt)
+    print(formatted_dict)
+    
+    
     
     X = Presentation()
 
@@ -106,16 +63,24 @@ def create_ppt():
     first_slide.placeholders[1].text = "Created by Big Data Lab"
 
     X.save("First_presentation.pptx")
-    for i in header_content:
-        if 'header' in i:
-            Layout = X.slide_layouts[5]
-            slide = X.slides.add_slide(Layout)
-            slide.shapes.title.text = i['header']
-            textbox = slide.shapes.add_textbox(Inches(3), Inches(1.5),Inches(3), Inches(1)) 
-            textframe = textbox.text_frame
-            paragraph = textframe.add_paragraph()
-            paragraph.text = i['content']
-            X.save("First_presentation.pptx")
-
-
+    for i in formatted_dict:
+        Layout = X.slide_layouts[5]
+        slide = X.slides.add_slide(Layout)
+        slide.shapes.title.text = i
+        left = Inches(1)
+        top = Inches(2)
+        width = Inches(6)
+        height = Inches(2)
+        textbox = slide.shapes.add_textbox(left, top, width, height)
+        for bullet in formatted_dict[i]:
+            p = textbox.text_frame.add_paragraph()
+            p.text = bullet
+            p.font.size = Pt(16)
+            p.font.name = 'Calibri'
+            p.level = 0
+            p.font.bold = False
+            # p.font.color.rgb = (0, 0, 0)
+        # wrap the text within the textbox
+        textbox.text_frame.word_wrap = True
+        X.save("First_presentation.pptx")
     return redirect(url_for('index'))
