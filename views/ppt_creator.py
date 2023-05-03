@@ -115,6 +115,7 @@ def create_linkedin_post():
 
 
     # Set your access token
+    # A is removed from the tocken for security reasons QV is the first two letters of the token
     ACCESS_TOKEN = 'AQViTyBEx9iMB1mxu9wsqo5UBWNCcXsNDZIWHjZ3h2KGRlN_wSWgADIKebeV65aXWTVUVeNC8dtDWPtBNtobqou8eYWIZCgham2j7hoQoaxXdDy_0eKi2hkqxF8btclfgpTScerywPvX77OsTsLpr88SjJ1AKcTsK5AoLWw5-Wu8H3fkT6sBm9z7UxyTbPTeKslQ1xAH6Ma3cuFmAq0X-X5SqJla8KujRuEYMDNuwfnRC34nVbXN30xFlaovueGqm5J2b3_e8i5xphp0g4hQQa29_D0CwnJjQkto0Hxy3h-z9oaqG5gFpFwkPGDRJ0dLymZH__EqrgJapr90cvjaXlLt1TfWtw'
 
     # Set the API endpoint URL
