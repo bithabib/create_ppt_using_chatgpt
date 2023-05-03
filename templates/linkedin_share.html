@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Share on LinkedIn</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            margin: 20px 0;
+            text-align: center;
+            color: #0077b5;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
+            max-width: 600px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        textarea {
+            display: block;
+            width: 100%;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 3px;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        input[type=submit] {
+            background-color: #0077b5;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type=submit]:hover {
+            background-color: #005ea2;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Share on LinkedIn</h1>
+    <form action="{{ url_for('create_linkedin_post') }}" method="post">
+        <label for="post-content">Post Content:</label>
+        <textarea id="post-content" name="post-content" rows="4" cols="50"></textarea>
+        <input type="submit" value="Share">
+    </form>
+</body>
+
+</html>
