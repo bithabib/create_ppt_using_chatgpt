@@ -7,7 +7,7 @@ import os
 import re
 from dotenv import load_dotenv
 load_dotenv()
-openai.api_key = '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'
+openai.api_key = os.environ.get('API_KEY')
 import requests
 import json
 
