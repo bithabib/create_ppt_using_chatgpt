@@ -103,6 +103,7 @@ def create_linkedin_post():
     ]
     request_text = request.form['post-content']
     create_linkedin_post = f"Please write a LinkedIn post on {request_text}"
+    messages.append({"role": "user", "content": create_linkedin_post})
     completion = openai.Completion.create(
         model="gpt-3.5-turbo",
         messages=messages
@@ -115,8 +116,8 @@ def create_linkedin_post():
 
 
     # Set your access token
-    # A is removed from the tocken for security reasons QV is the first two letters of the token
-    ACCESS_TOKEN = 'AQViTyBEx9iMB1mxu9wsqo5UBWNCcXsNDZIWHjZ3h2KGRlN_wSWgADIKebeV65aXWTVUVeNC8dtDWPtBNtobqou8eYWIZCgham2j7hoQoaxXdDy_0eKi2hkqxF8btclfgpTScerywPvX77OsTsLpr88SjJ1AKcTsK5AoLWw5-Wu8H3fkT6sBm9z7UxyTbPTeKslQ1xAH6Ma3cuFmAq0X-X5SqJla8KujRuEYMDNuwfnRC34nVbXN30xFlaovueGqm5J2b3_e8i5xphp0g4hQQa29_D0CwnJjQkto0Hxy3h-z9oaqG5gFpFwkPGDRJ0dLymZH__EqrgJapr90cvjaXlLt1TfWtw'
+    # A is removed from the tocken for security reasons QV is the first two letters of the token, i also removed
+    ACCESS_TOKEN = 'AQVTyBEx9iMB1mxu9wsqo5UBWNCcXsNDZIWHjZ3h2KGRlN_wSWgADIKebeV65aXWTVUVeNC8dtDWPtBNtobqou8eYWIZCgham2j7hoQoaxXdDy_0eKi2hkqxF8btclfgpTScerywPvX77OsTsLpr88SjJ1AKcTsK5AoLWw5-Wu8H3fkT6sBm9z7UxyTbPTeKslQ1xAH6Ma3cuFmAq0X-X5SqJla8KujRuEYMDNuwfnRC34nVbXN30xFlaovueGqm5J2b3_e8i5xphp0g4hQQa29_D0CwnJjQkto0Hxy3h-z9oaqG5gFpFwkPGDRJ0dLymZH__EqrgJapr90cvjaXlLt1TfWtw'
 
     # Set the API endpoint URL
     API_URL_User = 'https://api.linkedin.com/v2/me'
@@ -156,10 +157,10 @@ def create_linkedin_post():
             "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC"
         }
     }
-    # Make the POST request to share the post
+    # # Make the POST request to share the post
     # response = requests.post(API_URL_Share, headers=headers, data=json.dumps(post_content))
 
-    # Check the response status code
+    # # Check the response status code
     # if response.status_code == 201:
     #     print('Post shared successfully!')
     # else:
