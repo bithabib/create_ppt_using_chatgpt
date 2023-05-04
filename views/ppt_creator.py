@@ -7,7 +7,7 @@ import os
 import re
 from dotenv import load_dotenv
 load_dotenv()
-openai.api_key = os.environ.get('API_KEY')
+openai.api_key = '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'
 import requests
 import json
 
@@ -98,20 +98,20 @@ def linkedin_post():
 @app.route('/create_linkedin_post', methods=['POST'])
 def create_linkedin_post():
     print("I am in")
-    # messages = [
-    #     {"role": "system", "content": "You’re a kind helpful assistant"}
-    # ]
-    # request_text = request.form['post-content']
-    # create_linkedin_post = f"Please write a LinkedIn post on {request_text}"
-    # completion = openai.Completion.create(
-    #     model="gpt-3.5-turbo",
-    #     messages=messages
-    # )
-    # result_from_gpt = completion.choices[0].text
-    # print(result_from_gpt)
-
+    messages = [
+        {"role": "system", "content": "You’re a kind helpful assistant"}
+    ]
     request_text = request.form['post-content']
-    print(request_text)
+    create_linkedin_post = f"Please write a LinkedIn post on {request_text}"
+    completion = openai.Completion.create(
+        model="gpt-3.5-turbo",
+        messages=messages
+    )
+    result_from_gpt = completion.choices[0].text
+    print(result_from_gpt)
+
+    # request_text = request.form['post-content']
+    # print(request_text)
 
 
     # Set your access token
@@ -157,11 +157,11 @@ def create_linkedin_post():
         }
     }
     # Make the POST request to share the post
-    response = requests.post(API_URL_Share, headers=headers, data=json.dumps(post_content))
+    # response = requests.post(API_URL_Share, headers=headers, data=json.dumps(post_content))
 
     # Check the response status code
-    if response.status_code == 201:
-        print('Post shared successfully!')
-    else:
-        print('Error sharing post: ' + response.text)
+    # if response.status_code == 201:
+    #     print('Post shared successfully!')
+    # else:
+    #     print('Error sharing post: ' + response.text)
     return redirect(url_for('linkedin_post'))
