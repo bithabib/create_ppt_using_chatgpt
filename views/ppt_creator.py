@@ -103,17 +103,14 @@ def create_linkedin_post():
     ]
     request_text = request.form['post-content']
     create_linkedin_post = f"Please write a LinkedIn post on {request_text}"
+
     messages.append({"role": "user", "content": create_linkedin_post})
-    completion = openai.Completion.create(
+    completion = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=messages
     )
-    result_from_gpt = completion.choices[0].text
+    result_from_gpt = completion.choices[0].message.content
     print(result_from_gpt)
-
-    # request_text = request.form['post-content']
-    # print(request_text)
-
 
     # Set your access token
     # A is removed from the tocken for security reasons QV is the first two letters of the token, i also removed
@@ -148,7 +145,7 @@ def create_linkedin_post():
         "specificContent": {
             "com.linkedin.ugc.ShareContent": {
                 "shareCommentary": {
-                    "text": request_text
+                    "text": result_from_gpt
                 },
                 "shareMediaCategory": "NONE"
             }
@@ -158,11 +155,11 @@ def create_linkedin_post():
         }
     }
     # # Make the POST request to share the post
-    # response = requests.post(API_URL_Share, headers=headers, data=json.dumps(post_content))
+    response = requests.post(API_URL_Share, headers=headers, data=json.dumps(post_content))
 
-    # # Check the response status code
-    # if response.status_code == 201:
-    #     print('Post shared successfully!')
-    # else:
-    #     print('Error sharing post: ' + response.text)
+    # Check the response status code
+    if response.status_code == 201:
+        print('Post shared successfully!')
+    else:
+        print('Error sharing post: ' + response.text)
     return redirect(url_for('linkedin_post'))
